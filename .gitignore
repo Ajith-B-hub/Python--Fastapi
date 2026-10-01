@@ -1,0 +1,71 @@
+# FastAPI Customer Management API
+
+Enterprise-standard FastAPI service with:
+
+- Customer CRUD endpoints
+- JWT Authentication
+- Redis caching integration
+- Kafka event publication
+- SQLite database for local development
+
+## Run locally
+
+1. Create a virtual environment:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Start required services:
+   ```bash
+   docker compose up -d redis kafka zookeeper
+   ```
+
+4. Run the API:
+   ```bash
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+## Default login
+
+- Username: `admin`
+- Password: `admin123`
+
+## API Examples
+
+### Login
+```bash
+curl -X POST "http://localhost:8000/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+### Create customer
+```bash
+curl -X POST "http://localhost:8000/customers/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name":"John",
+    "last_name":"Doe",
+    "email":"john.doe@example.com",
+    "phone":"+1234567890",
+    "address":"123 Main St",
+    "is_active":true
+  }'
+```
+
+### Get customers
+```bash
+curl "http://localhost:8000/customers/" -H "Authorization: Bearer <TOKEN>"
+```
+
+## Notes
+
+- Redis and Kafka are intentionally lightweight and simple for local/dev use.
+- In production, you should switch to managed Redis and Kafka, plus stronger secrets and environment-based config.
